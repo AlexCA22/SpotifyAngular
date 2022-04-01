@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { CookieService } from 'ngx-cookie-service';
+
+
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
@@ -11,7 +14,8 @@ export class LoginPageComponent implements OnInit {
   errorSession: boolean = false
   // Analiza los hijos de los diferentes campos
   formLogin:FormGroup = new FormGroup({})
-  constructor(private authService: AuthService, private cookie: CookieService) {
+
+  constructor(private authService: AuthService, private cookie: CookieService, private router: Router) {
     
   }
 
@@ -41,7 +45,10 @@ export class LoginPageComponent implements OnInit {
       .subscribe(responseOk => {
         console.log('sesion iniciada correctamnete', responseOk);
         const {tokenSession, data }= responseOk
+        //Guardamos la cookie/token en este punto
         this.cookie.set('token', tokenSession, 4, '/')
+        // Una vez guardas el token, te lleva al apartado de canciones
+        this.router.navigate(['/', 'tracks'])
       },
       err =>{// errores de 400 o mayorr
         this.errorSession= true
